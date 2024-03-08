@@ -23,6 +23,8 @@ private static final String HOMEPAGE_URL="https://www.autotrader.ca/";
 private static final String CAR_MAKE_SELECTION="Audi";
 private static final String CAR_MODEL_SELECTION="A4";
 private static final String SEARCH_RESULTS_PAGE_URL="https://www.autotrader.ca/cars";
+private static final String POSTAL_CODE="v6l2y3";
+
 
 private static final By CAR_MAKE_LOCATOR=By.id("rfMakes");
 private static final By CAR_MODEL_LOCATOR=By.id("rfModel");
@@ -62,36 +64,37 @@ wait.until(ExpectedConditions.urlToBe(HOMEPAGE_URL));
  
  wait.until(ExpectedConditions.elementToBeClickable(CAR_MAKE_LOCATOR));
  WebElement makeElement = driver.findElement(CAR_MAKE_LOCATOR);
- Select dropdownmake=new Select(makeElement);
+ Select makeDropDown=new Select(makeElement);
  
- dropdownmake.selectByValue("Audi");
+ makeDropDown.selectByValue(CAR_MAKE_SELECTION);
  
- WebElement selectMake=dropdownmake.getFirstSelectedOption();
+ WebElement selectMake=makeDropDown.getFirstSelectedOption();
  Assert.assertEquals(selectMake.getText(), CAR_MAKE_SELECTION);
  
  wait.until(ExpectedConditions.elementToBeClickable(CAR_MODEL_LOCATOR));
  WebElement modelElement=driver.findElement(CAR_MODEL_LOCATOR);
- Select modeldropdown=new Select(modelElement);
+ Select modelDropDown=new Select(modelElement);
  
- modeldropdown.selectByValue("A4");
+ modelDropDown.selectByValue(CAR_MODEL_SELECTION);
  
- WebElement selectModel=modeldropdown.getFirstSelectedOption();
+ WebElement selectModel=modelDropDown.getFirstSelectedOption();
  Assert.assertEquals(selectModel.getText(), CAR_MODEL_SELECTION);
  
- Thread.sleep(3000);
- WebElement postCode=driver.findElement(POSTALCODE_LOCATOR);
- postCode.sendKeys("v6l2y3");
+ wait.until(ExpectedConditions.elementToBeClickable(POSTALCODE_LOCATOR));
+ WebElement postalCodeTextBox=driver.findElement(POSTALCODE_LOCATOR);
+ postalCodeTextBox.sendKeys(POSTAL_CODE);
  
- WebElement showCars=driver.findElement(SHOW_ME_CARS_LOCATOR);
- showCars.click();
+ wait.until(ExpectedConditions.elementToBeClickable(SHOW_ME_CARS_LOCATOR));
+ WebElement showCarsButton=driver.findElement(SHOW_ME_CARS_LOCATOR);
+ showCarsButton.click();
 
- driver.getCurrentUrl();
 Assert.assertTrue( driver.getCurrentUrl().contains(SEARCH_RESULTS_PAGE_URL));
 
+wait.until(ExpectedConditions.visibilityOfElementLocated(RESULTS_COUNT_LOCATOR));
 WebElement searchCount=driver.findElement(RESULTS_COUNT_LOCATOR);
-String result=searchCount.getText();
-int resultNumeric=Integer.parseInt(result);
-Assert.assertTrue(resultNumeric>=0);
+String resultCountValue=searchCount.getText();
+int resultCount=Integer.parseInt(resultCountValue);
+Assert.assertTrue(resultCount>0);
 
 }
 
