@@ -97,7 +97,7 @@ public void testCategoryRVs() throws InterruptedException {
 	Select maxPriceDropDown=new Select(maxPriceElement);
 	maxPriceDropDown.selectByValue(MAXPRICE);
 	
-	maxPriceElement=driver.findElement(MAXPRICE_LOCATOR);
+	maxPriceElement=driver.findElement(MAXPRICE_LOCATOR);//Not sure whether this is correct
 	WebElement selectMaxPrice= maxPriceDropDown.getFirstSelectedOption();
 	String maxPriceValue= selectMaxPrice.getText();
 	String replaceDollar=maxPriceValue.replace("$", "");
