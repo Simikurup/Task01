@@ -117,7 +117,7 @@ public void testCategoryRVs() throws InterruptedException {
 	
 	WebElement searchButtonElement=driver.findElement(SEARCH_BUTTON_LOCATOR);//8
 	Thread.sleep(3000);//Explicit wait to be provided need to discuss
-	searchButtonElement.click();//Explicit wait to be provided need to discuss
+	searchButtonElement.click();//
 	
 	WebElement resultCountElement=driver.findElement(RESULT_COUNT_LOCATOR);//9 
 	String resultCountValue=resultCountElement.getText();
