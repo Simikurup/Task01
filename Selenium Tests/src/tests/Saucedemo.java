@@ -197,7 +197,7 @@ public void shopping() throws InterruptedException {
 		
 	WebElement checkOut=driver.findElement(CHECKOUT_DESCRIPTION_LOCATOR);//11
 	Assert.assertTrue(checkOut.isDisplayed());
-	Thread.sleep(5000);
+	
 	
 	
 }

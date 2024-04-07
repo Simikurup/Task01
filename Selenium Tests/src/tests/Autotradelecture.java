@@ -18,9 +18,10 @@ import org.testng.annotations.Test;
 
 
 
-public class Autotrade {
+public class Autotradelecture {
 
 	private ChromeDriver driver;
+	private WebDriverWait wait;
 
 	private static final String HOMEPAGE_URL="https://www.autotrader.ca/";
 	private static final String CAR_MAKE_SELECTION="Audi";
@@ -55,72 +56,117 @@ public class Autotrade {
 	{
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
+		wait = new WebDriverWait(driver,Duration.ofSeconds(30));	
 	}
 	@AfterMethod
 	public void tearDown()
 	{
 		driver.quit();
 	}
-
 	@Test
-	public void selectMake()  throws InterruptedException
+	public void selectMake() throws InterruptedException
 	{
-		WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(30));	
-		driver.get(HOMEPAGE_URL);//1
-
-		wait.until(ExpectedConditions.urlToBe(HOMEPAGE_URL));//2
-		// Assert.assertEquals(driver.getCurrentUrl(), HOMEPAGE_URL);
-
-		wait.until(ExpectedConditions.elementToBeClickable(CAR_MAKE_LOCATOR));//3
-		WebElement makeElement = driver.findElement(CAR_MAKE_LOCATOR);
-		Select makeDropDown=new Select(makeElement);
-
-		makeDropDown.selectByValue(CAR_MAKE_SELECTION);
-
-		WebElement selectMake=makeDropDown.getFirstSelectedOption();
-		Assert.assertEquals(selectMake.getText(), CAR_MAKE_SELECTION);
-
-		wait.until(ExpectedConditions.elementToBeClickable(CAR_MODEL_LOCATOR));//4
-		WebElement modelElement=driver.findElement(CAR_MODEL_LOCATOR);
-		Select modelDropDown=new Select(modelElement);
-
-		modelDropDown.selectByValue(CAR_MODEL_SELECTION);
-
-		WebElement selectModel=modelDropDown.getFirstSelectedOption();
-		Assert.assertEquals(selectModel.getText(), CAR_MODEL_SELECTION);
-
-		wait.until(ExpectedConditions.elementToBeClickable(POSTALCODE_LOCATOR));//5
-		WebElement postalCodeTextBox=driver.findElement(POSTALCODE_LOCATOR);
-		postalCodeTextBox.sendKeys(POSTAL_CODE);
-		// Do search using text box by clicking the enter key 
-		postalCodeTextBox.sendKeys(Keys.ENTER);
-		
-		//Clicking the Show cars button
-		/* wait.until(ExpectedConditions.elementToBeClickable(SHOW_ME_CARS_LOCATOR));//6
- 		WebElement showCarsButton=driver.findElement(SHOW_ME_CARS_LOCATOR);
- 		showCarsButton.click();*/
-
-		Assert.assertTrue( driver.getCurrentUrl().contains(SEARCH_RESULTS_PAGE_URL));//7
-
-		wait.until(ExpectedConditions.visibilityOfElementLocated(RESULTSPAGE_HEADER_LOCATOR));//8
-		WebElement resultsPageHeader=driver.findElement(RESULTSPAGE_HEADER_LOCATOR);
-		String headerText=resultsPageHeader.getText();
+		openHomePage();
 	
+		Assert.assertEquals(gethomePageUrl(), HOMEPAGE_URL);
+
+		makeSelection(CAR_MAKE_SELECTION);
+
+		Assert.assertEquals(getSelectedMake(), CAR_MAKE_SELECTION);
+		
+		modelSelection(CAR_MODEL_SELECTION);
+		
+		Assert.assertEquals(getSelectedModel(), CAR_MODEL_SELECTION);
+		
+		typeLocation(POSTAL_CODE);
+		
+		// Do search using text box by clicking the enter key 
+		executeSearch();
+		
+		Assert.assertTrue( getresultsPageUrl().contains(SEARCH_RESULTS_PAGE_URL));
+
+		String headerText=getHeader();
 		Assert.assertTrue(headerText.contains(CAR_MAKE_SELECTION));//9
 		Assert.assertTrue(headerText.contains(CAR_MODEL_SELECTION));//10
 
+		//Wrong code
+		Assert.assertTrue(getResultsCount()>0);
+	}
 
-		//Get Title
-		String resultsPageTitle=driver.getTitle();//8
-		Assert.assertEquals(resultsPageTitle, RESULTS_PAGE_TITLE);
-		Assert.assertTrue(resultsPageTitle.contains(CAR_MAKE_SELECTION));//9
-		Assert.assertTrue(resultsPageTitle.contains(CAR_MODEL_SELECTION));//10 
+	private void openHomePage(){
+		driver.get(HOMEPAGE_URL);//1
+	}
+	
+	private String gethomePageUrl() {
+		String homePageURL=driver.getCurrentUrl();
+		return homePageURL;
+	}
 
+	private void makeSelection(String make) {
+		WebElement makeElement = driver.findElement(CAR_MAKE_LOCATOR);
+		Select makeDropDown=new Select(makeElement);
+		makeDropDown.selectByValue(make);
 
-		wait.until(ExpectedConditions.visibilityOfElementLocated(RESULTS_COUNT_LOCATOR));//11
-		WebElement searchCount=driver.findElement(RESULTS_COUNT_LOCATOR);
-		String resultCountValue=searchCount.getText();
-		int resultCount=Integer.parseInt(resultCountValue);//12
-		Assert.assertTrue(resultCount>0);
+	}
+	
+	private String getSelectedMake() {
+		WebElement makeElement = driver.findElement(CAR_MAKE_LOCATOR);
+		Select makeDropDown=new Select(makeElement);
+		
+		WebElement selectMake=makeDropDown.getFirstSelectedOption();
+		String selectedMake=selectMake.getText();
+		return selectedMake;
+
+	}
+	
+	private void modelSelection(String model) {
+		wait.until(ExpectedConditions.elementToBeClickable(CAR_MODEL_LOCATOR));//4
+		WebElement modelElement=driver.findElement(CAR_MODEL_LOCATOR);
+		Select modelDropDown=new Select(modelElement);
+		modelDropDown.selectByValue(model);
+	}
+	
+	private String getSelectedModel() {
+		wait.until(ExpectedConditions.elementToBeClickable(CAR_MODEL_LOCATOR));//4
+		WebElement modelElement=driver.findElement(CAR_MODEL_LOCATOR);
+		Select modelDropDown=new Select(modelElement);
+		
+		WebElement selectModel=modelDropDown.getFirstSelectedOption();
+		String modelSelected=selectModel.getText();
+		return modelSelected;
+	}
+	
+	private void typeLocation(String location) {
+		wait.until(ExpectedConditions.elementToBeClickable(POSTALCODE_LOCATOR));//5
+		WebElement postalCodeTextBox=driver.findElement(POSTALCODE_LOCATOR);
+		postalCodeTextBox.sendKeys(location);
+	}
+	
+	private void executeSearch() {
+		wait.until(ExpectedConditions.elementToBeClickable(POSTALCODE_LOCATOR));//5
+		WebElement postalCodeTextBox=driver.findElement(POSTALCODE_LOCATOR);
+				
+		postalCodeTextBox.sendKeys(Keys.ENTER);
+	
+	}
+	private String getresultsPageUrl() {
+		String resultPageUrl=driver.getCurrentUrl();
+		return resultPageUrl;
+	}
+	private String getHeader() {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(RESULTSPAGE_HEADER_LOCATOR));//8
+		WebElement resultsPageHeader=driver.findElement(RESULTSPAGE_HEADER_LOCATOR);
+		String headerText=resultsPageHeader.getText();
+		return headerText;
+		
+	}
+	private int getResultsCount() {
+		WebElement resultsPageHeader=driver.findElement(RESULTSPAGE_HEADER_LOCATOR);
+		String headerText=resultsPageHeader.getText();
+		
+		int indexOfLabel=headerText.indexOf(" ");
+		String resultCountExtracted=headerText.substring(0, indexOfLabel);
+		int count=Integer.parseInt(resultCountExtracted);
+		return count;
 	}
 }

@@ -97,6 +97,7 @@ public void testCategoryRVs() throws InterruptedException {
 	Select maxPriceDropDown=new Select(maxPriceElement);
 	maxPriceDropDown.selectByValue(MAXPRICE);
 	
+	//Issue1:With out the below line of code getting stale element Exception
 	maxPriceElement=driver.findElement(MAXPRICE_LOCATOR);//Not sure whether this is correct
 	WebElement selectMaxPrice= maxPriceDropDown.getFirstSelectedOption();
 	String maxPriceValue= selectMaxPrice.getText();
