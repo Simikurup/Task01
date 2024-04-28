@@ -1,12 +1,14 @@
 package tests.Saucedemopackage;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class SauceDemoCheckoutStepTwo {
+public class CheckoutStepTwoPage {
 	private WebDriver driver;
 	private WebDriverWait wait;
 	
@@ -19,25 +21,15 @@ public class SauceDemoCheckoutStepTwo {
 	private static final By PRODUCTNAME_LOCATOR=By.xpath("//div[@class='inventory_item_name']");
 	private static final By PRODUCT_DESCRIPTION_LOCATOR=By.xpath("//div[@class='inventory_item_desc']");
 	private static final By PRODUCT_PRICE_LOCATOR=By.xpath("//div[@class='inventory_item_price']");
-	public SauceDemoCheckoutStepTwo(WebDriver driver, WebDriverWait wait) {
+	public CheckoutStepTwoPage(WebDriver driver) {
 		this.driver=driver;
-		this.wait=wait;
-	}
-
-	public void checkoutStepSecond() {
-		getProductTitle();
-		getProductDescription();
-		getProductPrice();
-		getPaymentInfo();
-		getShippingInfo();
-		getPriceTotal();
-		getTax();
-		getTotal();
+		this.wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 	}
 	
-		public SauceDemoCheckoutComplete finish() {
-		finishCheckOut();
-		return new SauceDemoCheckoutComplete(this.driver,this.wait);
+		public CheckoutCompletePage finishWorkFlow() {
+		clickFinishCheckoutButton();
+		return new CheckoutCompletePage(this.driver);
+		
 	}
 	
 	public String getProductTitle() {
@@ -94,7 +86,7 @@ public class SauceDemoCheckoutStepTwo {
 		double totalToPay=Double.parseDouble(totalValReplace$);
 		return totalToPay;
 	}
-	private void finishCheckOut() {
+	private void clickFinishCheckoutButton() {
 		wait.until(ExpectedConditions.elementToBeClickable(FINISH_LOCATOR));
 		WebElement finishButton=driver.findElement(FINISH_LOCATOR);
 		finishButton.click();

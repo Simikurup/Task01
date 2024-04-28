@@ -12,9 +12,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import tests.SauceDemoLogin;
-import tests.SauceDemoProducts;
-
 public class SauceDemoTest00 {
 private static final String SHIPPINGINFO_TEXT = "Free Pony";
 private static final String PAYMENTINFO_TEXT = "SauceCard";
@@ -40,7 +37,6 @@ private static final String STD_USERNAME = "standard_user";
 @BeforeMethod
 public void SetUp() {
 driver=new ChromeDriver();	
-wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 driver.manage().window().maximize();
 
 }
@@ -48,103 +44,52 @@ driver.manage().window().maximize();
 public void TearDown() {
 driver.quit();
 }
+
 @Test
-public void standardUserLogin() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	Assert.assertEquals(login.getHomePageUrl(),SauceDemoLogin.HOME_PAGE_URL );
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
+public void purchaseSingleProduct() {
+	LoginPage log=new LoginPage(driver);
+	log.openHomePage();
+	Assert.assertEquals(log.getHomePageUrl(),LoginPage.HOME_PAGE_URL );
+	ProductsPage products=log.login(STD_USERNAME,STD_PASSWORD);
 	Assert.assertEquals(driver.getCurrentUrl(), PRODUCTS_PAGE);
-}
-@Test
-public void verifyProduct() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
+	
+	products.getProductTitle();
+	products.getProductDescription();
+	products.getProductPrice();
 	Assert.assertTrue(products.getProductTitle().startsWith(TITLE));
 	Assert.assertTrue(products.getProductDescription().startsWith(PRODUCT_DESC_LABEL));
-	Assert.assertTrue(products.getProductPrice()>0);	
-}
-@Test
-public void addToCart() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
+	Assert.assertTrue(products.getProductPrice()>0);
+	
 	products.addProductToCart();
 	products.getNumberOfItemsInCart();
 	Assert.assertEquals(products.getNumberOfItemsInCart(),1);
-}
-@Test
-public void clickCart() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
-	products.addProductToCart();
-	products.getNumberOfItemsInCart();
-	SauceDemoCartPage cart=products.clickCart();
-	Assert.assertEquals(driver.getCurrentUrl(), CART_PAGE);
-}	
-@Test
-public void verifyCart() {
-		SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-		login.saucedemoOpenHomepage();
-		SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-		products.verifyproductDetails();
-		products.addProductToCart();
-		products.getNumberOfItemsInCart();
-		SauceDemoCartPage cart=products.clickCart();
-		cart.verifyproductDetails();
-		Assert.assertTrue(cart.getProductTitle().startsWith(TITLE));
-		Assert.assertTrue(cart.getProductDescription().startsWith(PRODUCT_DESC_LABEL));
-		Assert.assertTrue(cart.getProductPrice()>0);
 		
-	}
-@Test
-public void checkout() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
-	products.addProductToCart();
-	products.getNumberOfItemsInCart();
-	SauceDemoCartPage cart=products.clickCart();
-	cart.verifyproductDetails();
-	SauceDemoCheckoutStepOne checkoutStepOne =cart.checkout();
+	CartPage cart=products.goToCart();
+	Assert.assertEquals(driver.getCurrentUrl(), CART_PAGE);
+	
+	cart.getProductTitle();
+	cart.getProductDescription();
+	cart.getProductPrice();
+	Assert.assertTrue(cart.getProductTitle().startsWith(TITLE));
+	Assert.assertTrue(cart.getProductDescription().startsWith(PRODUCT_DESC_LABEL));
+	Assert.assertTrue(cart.getProductPrice()>0);
+	
+	
+	CheckoutStepOnePage checkoutStepOne =cart.checkout();
 	Assert.assertEquals(driver.getCurrentUrl(), CHECHOUT_STEPONE);
 	
-}
-
-@Test
-public void checkoutStepOne() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
-	products.addProductToCart();
-	products.getNumberOfItemsInCart();
-	SauceDemoCartPage cart=products.clickCart();
-	cart.verifyproductDetails();
-	SauceDemoCheckoutStepOne checkoutStepOne =cart.checkout();
-	checkoutStepOne.checkoutStepFirst(FIRSTNAME,LASTNAME,POSTALCODE);
-	SauceDemoCheckoutStepTwo checkoutSteptwo= checkoutStepOne.clickContinue();
+	checkoutStepOne.enterUserInfo(FIRSTNAME,LASTNAME,POSTALCODE);
+	CheckoutStepTwoPage checkoutSteptwo= checkoutStepOne.continueToNextPage();
 	Assert.assertEquals(driver.getCurrentUrl(), CHECKOUT_STEPTWO);
-}
-@Test
-public void checkoutStepTwo() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
-	products.addProductToCart();
-	products.getNumberOfItemsInCart();
-	SauceDemoCartPage cart=products.clickCart();
-	cart.verifyproductDetails();
-	SauceDemoCheckoutStepOne checkoutStepOne =cart.checkout();
-	checkoutStepOne.checkoutStepFirst(FIRSTNAME,LASTNAME,POSTALCODE);
-	SauceDemoCheckoutStepTwo checkoutSteptwo= checkoutStepOne.clickContinue();
+	
+	checkoutSteptwo.getProductTitle();
+	checkoutSteptwo.getProductDescription();
+	checkoutSteptwo.getProductPrice();
+	checkoutSteptwo.getPaymentInfo();
+	checkoutSteptwo.getShippingInfo();
+	checkoutSteptwo.getPriceTotal();
+	checkoutSteptwo.getTax();
+	checkoutSteptwo.getTotal();
 	Assert.assertTrue(checkoutSteptwo.getProductTitle().startsWith(TITLE));
 	Assert.assertTrue(checkoutSteptwo.getProductDescription().startsWith(DESCRIPTION));
 	Assert.assertTrue(checkoutSteptwo.getProductPrice()>0);
@@ -153,24 +98,9 @@ public void checkoutStepTwo() {
 	Assert.assertTrue(checkoutSteptwo.getPriceTotal()>0);
 	Assert.assertTrue(checkoutSteptwo.getTax()>0);
 	Assert.assertTrue(checkoutSteptwo.getTotal()>0);
-	SauceDemoCheckoutComplete complete=checkoutSteptwo.finish();
-	Assert.assertEquals(driver.getCurrentUrl(), COMPLETE);
 	
-}
-@Test
-public void checkoutComplete() {
-	SauceDemoLogin login=new SauceDemoLogin(driver,wait);
-	login.saucedemoOpenHomepage();
-	SauceDemoProducts products=login.sauceDemologin(STD_USERNAME,STD_PASSWORD);
-	products.verifyproductDetails();
-	products.addProductToCart();
-	products.getNumberOfItemsInCart();
-	SauceDemoCartPage cart=products.clickCart();
-	cart.verifyproductDetails();
-	SauceDemoCheckoutStepOne checkoutStepOne =cart.checkout();
-	checkoutStepOne.checkoutStepFirst(FIRSTNAME,LASTNAME,POSTALCODE);
-	SauceDemoCheckoutStepTwo checkoutSteptwo= checkoutStepOne.clickContinue();
-	SauceDemoCheckoutComplete complete=checkoutSteptwo.finish();
+	CheckoutCompletePage complete=checkoutSteptwo.finishWorkFlow();
+	Assert.assertEquals(driver.getCurrentUrl(), COMPLETE);
 	complete.getcheckOutompleteText();
 }
 }
@@ -178,14 +108,3 @@ public void checkoutComplete() {
 
 
 
-//1.Login as standard user
-//2.Verify there are 6 products in the page
-//3.For first product, verify Title and description are not empty and price is positive
-//4.Add to cart
-//5.Cart should show 1
-//6.Click on Cart
-//7.On cart page verify Title and description are not empty and price is positive
-//8.Checkout
-//9.Check out Step1:Enter First name,Last name,postal code,Click continue
-//10.Check out Step2:Verify all the details are present ,Finish
-//11.Checkout complete:Verify Title

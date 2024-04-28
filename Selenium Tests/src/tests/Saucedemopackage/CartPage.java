@@ -1,12 +1,14 @@
 package tests.Saucedemopackage;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class SauceDemoCartPage {
+public class CartPage {
 	private WebDriver driver;
 	private WebDriverWait wait;
 	private static final By PRODUCTNAME_LOCATOR=By.xpath("//div[@class='inventory_item_name']");
@@ -14,20 +16,14 @@ public class SauceDemoCartPage {
 	private static final By PRODUCT_PRICE_LOCATOR=By.xpath("//div[@class='inventory_item_price']");
 	private static final By CHECKOUT_LOCATOR=By.id("checkout");
 	
-	public SauceDemoCartPage(WebDriver driver, WebDriverWait wait) {
+	public CartPage(WebDriver driver) {
 		this.driver=driver;
-		this.wait=wait;
+		this.wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 	}
 
-	public void verifyproductDetails() {
-		getProductTitle();
-		getProductDescription();
-		getProductPrice();
-		
-	}
-	public SauceDemoCheckoutStepOne checkout() {
+	public CheckoutStepOnePage checkout() {
 		clickCheckOut();
-		return new SauceDemoCheckoutStepOne(this.driver,this.wait);
+		return new CheckoutStepOnePage(this.driver);
 	}
 	public String getProductTitle() {
 		this.wait.until(ExpectedConditions.visibilityOfElementLocated(PRODUCTNAME_LOCATOR));
