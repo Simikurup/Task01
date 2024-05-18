@@ -12,33 +12,33 @@ import org.testng.Assert;
 
 public class LoginPage {
 	
-
 private	WebDriver driver;
 private WebDriverWait wait;
 private static final By STD_USERNAME_LOCATOR	=By.id("user-name");	
 private static final By STD_PASSWORD_LOCATOR=By.id("password");
-private static final By LOCATOR_BUTTON_LOCATOR=By.id("login-button");
-public static final String HOME_PAGE_URL = "https://www.saucedemo.com/";
+private static final By LOGIN_BUTTON_LOCATOR=By.id("login-button");
 
+
+//Constructor
 public LoginPage(WebDriver driver) {
 	this.driver=driver;
 	this.wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 }
-public void saucedemoOpenHomepage() {
-	openHomePage();
+//public void saucedemoOpenHomepage() {
+//	openHomePage();
 		
-}
+//}
 public ProductsPage login(String username,String password) {
 	enterUserName(username);	
 	enterPassword(password);
 	clickLogin();
 	return new ProductsPage(this.driver);
 }
-public void openHomePage() {
-	this.driver.get(HOME_PAGE_URL);
+public void openLoginPage(String url) {
+	this.driver.get(url);;
 	
 }
-public String getHomePageUrl() {
+public String getUrl() {
 	String currentUrl=this.driver.getCurrentUrl();
 	return currentUrl;
 	
@@ -54,8 +54,8 @@ private void enterPassword(String password) {
 	PasswordTextbox.sendKeys(password);
 }
 private void clickLogin() {
-	this.wait.until(ExpectedConditions.elementToBeClickable(LOCATOR_BUTTON_LOCATOR));
-	WebElement loginButton=this.driver.findElement(LOCATOR_BUTTON_LOCATOR);
+	this.wait.until(ExpectedConditions.elementToBeClickable(LOGIN_BUTTON_LOCATOR));
+	WebElement loginButton=this.driver.findElement(LOGIN_BUTTON_LOCATOR);
 	loginButton.click();
 }
 }

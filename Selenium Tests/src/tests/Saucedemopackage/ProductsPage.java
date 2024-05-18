@@ -24,7 +24,10 @@ public ProductsPage(WebDriver driver) {
 	this.driver=driver;
 	this.wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 }
-
+public String getUrl() {
+	String currentUrl=this.driver.getCurrentUrl();
+	return currentUrl;
+}
 
 public CartPage goToCart() {
 	clickCartItems();

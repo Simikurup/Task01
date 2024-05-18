@@ -17,7 +17,11 @@ public class CheckoutCompletePage {
 		this.driver=driver;
 		this.wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 	}
-	public String getcheckOutompleteText() {
+	public String getUrl() {
+		String currentUrl=this.driver.getCurrentUrl();
+		return currentUrl;
+	}
+	public String getcheckOutCompleteText() {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(CHECKOUT_DESCRIPTION_LOCATOR));
 		WebElement CheckOutDescriptionText=driver.findElement(CHECKOUT_DESCRIPTION_LOCATOR);
 		return CheckOutDescriptionText.getText();

@@ -20,6 +20,10 @@ public class CheckoutStepOnePage {
 		this.driver=driver;
 		this.wait= new WebDriverWait(driver,Duration.ofSeconds(30));
 	}
+	public String getUrl() {
+		String currentUrl=this.driver.getCurrentUrl();
+		return currentUrl;
+	}
 	public void enterUserInfo(String firstName,String lastName,String postalCode) {
 		typeFirstName(firstName);
 		typeLastName(lastName);
