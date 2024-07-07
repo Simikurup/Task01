@@ -47,16 +47,17 @@ LogInPage loginPage=new LogInPage(driver);
 loginPage.openHomePage(HOMEPAGE_URL);
 Assert.assertEquals(loginPage.getUrl(), HOMEPAGE_URL);
 
-AddUser addUser=loginPage.clickSignup();
+AddUserPage addUser=loginPage.goToAddUserPage();
 Assert.assertEquals(addUser.getUrl(), ADDUSER_URL);
 
-AddNewContact addNewContact=addUser.addUserdetails(FIRSTNAME,LASTNAME,EMAIL,PASSWORD);
+AddNewContactPage addNewContact=addUser.addUserdetails(FIRSTNAME,LASTNAME,EMAIL,PASSWORD);
 Assert.assertEquals(addNewContact.getURL(), CONTACTLIST_URL);
 
-AddContact addContact=addNewContact.addANewContact();
+AddContactPage addContact=addNewContact.addANewContact();
 Assert.assertEquals(addContact.getURL(), ADD_CONTACT_URL );
 
-AddNewContact addNewContacts=addContact.contactDetails(FIRSTNAME,LASTNAME,BIRTH_DATE,EMAIL,PHONE,ADDRESS1,ADDRESS2,CITY,STATE,POSTALCODE,COUNTRY);
+addContact.enterContactInfo(FIRSTNAME,LASTNAME,BIRTH_DATE,EMAIL,PHONE,ADDRESS1,ADDRESS2,CITY,STATE,POSTALCODE,COUNTRY);
+AddNewContactPage addNewContacts=addContact.saveChanges();
 Assert.assertEquals(addNewContacts.getURL(), CONTACTLIST_URL);
 
 Assert.assertTrue(addNewContact.isPhoneNoDisplayed(PHONE));
@@ -67,21 +68,21 @@ Assert.assertTrue(addNewContact.isAddressDisplayed(ADDRESS1,ADDRESS2));
 Assert.assertTrue(addNewContact.isCityStatePostalcodeDisplayed(CITY,STATE,POSTALCODE));
 Assert.assertTrue(addNewContact.isCountryDisplayed(COUNTRY));
 
-Assert.assertTrue(addNewContacts.verifyName().equalsIgnoreCase(name));
-Assert.assertEquals(addNewContacts.verifyDOB(),BIRTH_DATE);
-Assert.assertEquals(addNewContacts.verifyEmail(),EMAIL);
-Assert.assertEquals(addNewContacts.verifyPhoneNo(),PHONE);
-Assert.assertTrue(addNewContacts.verifyAddress().equalsIgnoreCase(address));
-Assert.assertTrue(addNewContacts.verifyCityState().equalsIgnoreCase(addressdetails));
-Assert.assertEquals(addNewContacts.verifyCountry(),COUNTRY);
+Assert.assertTrue(addNewContacts.getName().equalsIgnoreCase(name));
+Assert.assertEquals(addNewContacts.getDOB(),BIRTH_DATE);
+Assert.assertEquals(addNewContacts.getEmail(),EMAIL);
+Assert.assertEquals(addNewContacts.getPhoneNo(),PHONE);
+Assert.assertTrue(addNewContacts.getAddress().equalsIgnoreCase(address));
+Assert.assertTrue(addNewContacts.getCityState().equalsIgnoreCase(addressdetails));
+Assert.assertEquals(addNewContacts.getCountry(),COUNTRY);
 
 
-ContactDetails contactdetails=addNewContact.clickContact();
+ContactDetailsPage contactdetails=addNewContact.clickContact(BIRTH_DATE);
 Assert.assertEquals(contactdetails.getURL(), CONTACT_DETAILS_URL);
 
 
 
-AddNewContact addNewcontactpage= contactdetails.deleteContact();
+AddNewContactPage addNewcontactpage= contactdetails.deleteContact();
 Alert alert = driver.switchTo().alert();
 alert.accept();
 

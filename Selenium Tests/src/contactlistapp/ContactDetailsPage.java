@@ -8,25 +8,25 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class ContactDetails {
+public class ContactDetailsPage {
 
 	private WebDriver driver;
 	private WebDriverWait wait;
+	private static final By DELETE_CONTACT_ID=By.id("delete");
 	
-	public ContactDetails(WebDriver driver) {
+	public ContactDetailsPage(WebDriver driver) {
 		this.driver=driver;
 		this.wait=new WebDriverWait (driver,Duration.ofSeconds(30));
 	}
 public String getURL() {
-	String currentURL=driver.getCurrentUrl();
-	return currentURL;
+	return driver.getCurrentUrl();
+	
 }
-public AddNewContact deleteContact()  {
-	By DELETE_CONTACT_LOCATOR=By.id("delete");
-	this.wait.until(ExpectedConditions.elementToBeClickable(DELETE_CONTACT_LOCATOR));
-	WebElement deletecontactButton=driver.findElement(DELETE_CONTACT_LOCATOR);
+public AddNewContactPage deleteContact()  {
+	this.wait.until(ExpectedConditions.elementToBeClickable(DELETE_CONTACT_ID));
+	WebElement deletecontactButton=driver.findElement(DELETE_CONTACT_ID);
 	deletecontactButton.click();
-	return new AddNewContact (driver);
+	return new AddNewContactPage (driver);
 
 }
 

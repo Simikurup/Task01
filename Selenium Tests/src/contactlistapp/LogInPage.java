@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class LogInPage {
 
-	private static final By SIGN_UP_BUTTON_LOCATOR=By.id("signup");
+	private static final By SIGN_UP_BUTTON_ID=By.id("signup");
 	private WebDriver driver;
 	private WebDriverWait wait;
 
@@ -25,14 +25,14 @@ public class LogInPage {
 
 	}
 	public String getUrl() {
-		String currentUrl=this.driver.getCurrentUrl();
-		return currentUrl;
-	}
-	public AddUser clickSignup() {
-		this.wait.until(ExpectedConditions.elementToBeClickable(SIGN_UP_BUTTON_LOCATOR));
-		WebElement signUpButton =this.driver.findElement(SIGN_UP_BUTTON_LOCATOR);
+		return this.driver.getCurrentUrl();
+		}
+	
+	public AddUserPage goToAddUserPage() {
+		this.wait.until(ExpectedConditions.elementToBeClickable(SIGN_UP_BUTTON_ID));
+		WebElement signUpButton =this.driver.findElement(SIGN_UP_BUTTON_ID);
 		signUpButton.click();
-		return new AddUser(this.driver);
+		return new AddUserPage(this.driver);
 	}
 
 
